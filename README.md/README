@@ -1,0 +1,104 @@
+# Project Overview
+
+    This project implements a backend service for Bitespeed’s identity reconciliation challenge.
+    It is designed for FluxKart.com to unify and consolidate customer contact information across multiple orders, linking related contacts based on phone number and email.
+
+The backend is developed with Node.js, TypeScript, Express, and Prisma ORM with SQLite as the database .
+
+# Features
+
+1.  Accepts POST requests at /identify with optional email and phoneNumber.
+2.  Finds existing contacts matching by email or phoneNumber.
+3.  Links multiple contact records to a single primary contact with secondaries.
+4.  Creates new contacts where none exists, designating primary and secondary contacts correctly.
+5.  Returns consolidated contact information including all emails, phone numbers, primary and secondary contact IDs.
+6.  Properly updates contact link precedence and linked IDs to maintain correct relationships.
+
+# Installation
+
+1. Prerequisites
+
+   # Node.js (version 16+) installed (https://nodejs.org)
+
+   # npm (comes with Node.js)
+
+# Steps
+
+1. Clone or download this repository.
+2. Navigate to the project folder in the terminal.
+3. Install dependencies:
+   # npm install
+4. Set up the database and Prisma client:
+   # npx prisma migrate dev --name init
+   # npx prisma generate
+
+# Running the Server
+
+     Start the development server by running:   npm run dev
+
+     The server will listen on http://localhost:3000.
+
+# API Usage
+
+    POST /identify
+
+# JSON body must contain at least one of:
+
+     1. email: Customer email (string)
+     2. phoneNumber: Customer phone number (string or number)
+
+# Response format:
+
+    json
+
+{
+"contact": {
+"primaryContatctId": number,
+"emails": string[],
+"phoneNumbers": string[],
+"secondaryContactIds": number[]
+}
+}
+
+# Example Request
+
+    json
+
+    POST /identify
+    {
+      "email": "docbrown@fluxkart.com",
+      "phoneNumber": "998877"
+    }
+
+# Example response
+
+    json
+    {
+        "contact": {
+        "primaryContatctId": 1,
+        "emails": ["docbrown@fluxkart.com"],
+        "phoneNumbers": ["998877"],
+        "secondaryContactIds": []
+                    }
+    }
+
+# Project Structure
+
+/src # Source TypeScript files
+index.ts # Entry point and server setup
+contactRouter.ts # Express router handling /identify route
+identifyController.ts # Controller logic for identify API
+/prisma # Prisma schema and migrations
+package.json # npm dependencies and scripts
+tsconfig.json # TypeScript compiler configuration
+README.md # This file
+
+# Notes
+
+1.  The database used is SQLite for easy setup; switching to PostgreSQL or others just requires updating Prisma datasource.
+
+2.  Make sure to test all edge cases, including partial data and merging contacts correctly.
+
+3.  Designed for clarity, modularity, and easy maintainability.
+
+###### If any support is needed on running tests, deploying, or extending this project, feel free to reach out! .
